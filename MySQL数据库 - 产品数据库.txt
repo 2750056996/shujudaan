@@ -1,0 +1,62 @@
+第一关
+USE test_product;
+
+####################
+#请在此处添加实现代码
+########## Begin ##########
+select pc.model, pc.speed, pc.hd from pc, product where product.model = pc.model and product.type = 'pc' and pc.price < 1000 order by pc.hd, pc.model desc;
+select maker, model, type from product where type = 'printer';
+select model, color, type, price from printer where type= 'laser' and color = 'T' order by model;
+select maker from product where type = 'laptop' and maker not in (select maker from product where type = 'pc') order by maker;
+select a.model modela, b.model modelb from pc a,pc b where a.speed = b.speed and a.ram =b.ram and a.model > b.model order by a.model,b.model;
+
+ 
+
+
+
+########## End ##########
+ 
+----
+
+第二关
+USE test_product;
+
+####################
+#请在此处添加实现代码
+########## Begin ##########
+select hd ,count(*)  from pc group by hd having count(*) <=2;
+select distinct maker from product where model in (select model from pc group by model having avg(speed) = (select max(c) from (select avg(speed) as c from pc group by model)s));
+select maker from product where type ='pc' group by maker having count(model) = 2; 
+#select product.*,pc.* from pc,product where product.model = pc.model;
+#select product.*,laptop.* from laptop,product where product.model = laptop.model;
+select maker from product where model in (select model from pc where speed>2 union select model from laptop where speed >2) group by maker having count(model)>=2;
+select maker from product group by maker having count(model) = (select max(c) from (select count(model) as c from product group by maker)s);
+
+########## End ##########
+
+----
+
+第三关
+  USE test_product;
+
+####################
+#请在此处添加实现代码
+########## Begin ##########
+update pc set price =price+200 where model in (select model from product where type = 'pc' and maker = 'A');
+delete from laptop where model in(select model from product where type = 'laptop' and maker = 'B');
+delete from product where type = 'laptop' and maker ='B';
+insert into product values('K','9001','pc'),('K','9002','laptop');
+delete from product where model in (select maker from printer where type = 'ink-jet');
+delete from product where model in (select model from printer where type = 'ink-jet');
+delete from printer where type = 'ink-jet';
+
+
+
+
+
+########## End ##########
+
+select * from product order by maker;
+select * from pc order by model;
+select * from laptop order by model;
+select * from printer order by model;

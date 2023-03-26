@@ -1,0 +1,109 @@
+第一关
+USE test_wyy_db_guet
+GO
+
+SET NOCOUNT ON
+
+ 
+-- ********** Begin ********** --
+-- ********** 此处写第一题的SQL语句 ********** --
+select count(*) from course where credit>2;
+
+-- ********** End ********** --
+
+GO
+ 
+-- ********** Begin ********** --
+-- ********** 此处写第二题的SQL语句 ********** --
+
+
+select sum(credit) from course where cno like 'BT%';
+-- ********** End ********** --
+
+GO
+
+ 
+-- ********** Begin ********** --
+-- ********** 此处写第三题的SQL语句 ********** --
+select left(cno,2),count(cno) from course group by left(cno,2);
+-- ********** End ********** --
+
+GO
+
+----
+
+第二关
+USE test_wyy_db_guet
+Go
+
+SET NOCOUNT ON
+
+
+-- ********** Begin ********** --
+---------- 第一题----------
+select count(model) from printer where color = 'T'and type= 'laser';
+-- ********** End ********** --
+GO
+
+
+-- ********** Begin ********** --
+---------- 第二题----------
+select min(price) from printer where type= 'ink-jet';
+-- ********** End ********** --
+GO
+
+-- ********** Begin ********** --
+---------- 第三题----------
+select model,price from printer where type= 'laser' and price =(select max(price) from printer where type= 'laser');
+-- ********** End ********** --
+GO
+
+----
+
+第三关
+USE test_wyy_db_guet
+Go
+
+SET NOCOUNT ON
+
+---------- 第1题 ----------
+-- ********** Begin ********** --
+
+select hd from (select hd from pc union all select hd from laptop)s group by hd having count(hd)<3;
+
+
+-- ********** End ********** --
+
+GO
+
+---------- 第2题 ----------
+-- ********** Begin ********** --
+select max(c) from (select avg(speed) as c from (select product.maker,pc.speed from product,pc where product.model = pc.model
+union all
+select product.maker,laptop.speed from product,laptop where product.model = laptop.model)s group by maker)g; 
+
+-- ********** End ********** --
+
+GO
+
+---------- 第3题 ----------
+-- ********** Begin ********** --
+select maker,count(price) from (select product.maker,pc.price from product,pc where product.model = pc.model and pc.price >1000
+union all
+select product.maker,laptop.price from product,laptop where product.model = laptop.model and laptop.price > 1000)s group by s.maker;
+
+
+-- ********** End ********** --
+
+GO
+---------- 第4题 ----------
+-- ********** Begin ********** --
+select product.maker,product.type,avg(laptop.price) from product,laptop where product.model = laptop.model group by product.maker,product.type
+union all
+select product.maker,product.type,avg(pc.price) from product,pc where product.model = pc.model group by product.maker,product.type
+;
+
+
+-- ********** End ********** --
+
+GO

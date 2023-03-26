@@ -1,0 +1,59 @@
+第一关
+USE test_wyy_db_guet
+GO
+
+SET NOCOUNT ON
+
+  
+-- ********** Begin ********** --
+-- ********** 此处写第1题的SQL语句 ********** --
+update student set sname = rtrim(ltrim(sname))
+
+-- ********** End ********** --
+
+GO
+
+ -- ********** Begin ********** --
+-- ********** 此处写第2题的SQL语句 ********** --
+update student set sname = left(sname,1)+right(sname,1) where sname like '_ % _'
+-- ********** End ********** --
+
+GO
+
+-- ********** Begin ********** --
+-- ********** 此处写第3题的SQL语句 ********** --
+
+-- ********** End ********** --
+update student set snative = left(snative,len(snative)-1) where snative like '%族'
+GO
+--下面语句请勿删除
+SELECT * FROM student
+GO
+
+-----
+
+第二关
+USE test_wyy_db_guet
+Go
+
+SET NOCOUNT ON
+
+
+-- ********** Begin ********** --
+---------- 第一题----------
+select snative,count(snative) from student group by snative
+-- ********** End ********** --
+GO
+
+
+-- ********** Begin ********** --
+---------- 第二题----------
+select sum(credit) from course where cno in (select cno from sc)
+-- ********** End ********** --
+GO
+
+-- ********** Begin ********** --
+---------- 第三题----------
+select cno,grade,count(sno) from sc group by cno,grade
+-- ********** End ********** --
+GO

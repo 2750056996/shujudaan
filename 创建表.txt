@@ -1,0 +1,11 @@
+sqlcmd -S localhost -U sa -P '<123123Aa!@>'
+create database TestDb
+go
+use TestDb
+go
+create table t_emp(
+id INT,
+name VARCHAR(32),
+deptId INT,
+salary FLOAT)
+go
