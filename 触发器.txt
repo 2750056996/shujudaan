@@ -1,0 +1,136 @@
+1.
+USE accountDB
+go
+
+SET NOCOUNT ON 
+go
+--********** create trigger_insert_operator  **********--
+--********** Begin **********--
+create trigger trigger_insert_operator
+on operator
+after insert
+as
+begin 
+    if(select type from inserted)='in'
+    begin
+        if exists(select accountno from account where accountno =(select accno from inserted))                  
+        begin 
+        update account set accountno =(select total from account where accountno= (select accno from inserted))+(select num from inserted where accountno=(select accno from inserted)) where accountno = (select accno from inserted)
+        end
+        else
+        begin
+        insert into account(accountno,total) values((select accno from inserted),(select num from inserted))
+        end 
+    end
+    if(select type from inserted)='out'
+    begin
+        if not exists(select accountno from account where accountno=(select accno from inserted))
+            begin
+            RAISERROR('插入的账户异常，操作被禁止',1,1)
+            end
+        else
+            begin
+            update account set total=(select total from account where accountno =(select accno from inserted))-(select num from inserted)where accountno = (select accno from inserted);
+            end
+    end
+
+
+end
+
+
+    
+
+
+
+
+
+
+
+--********** End **********--
+go
+
+--以下代码请勿删除
+insert into operator(accno,type,num) values('002','in',878)
+go
+insert into operator(accno,type,num) values('003','in',608)
+go
+insert into operator(accno,type,num) values('002','out',90)
+go
+insert into operator(accno,type,num) values('001','out',50)
+go
+insert into operator(accno,type,num) values('004','out',50)
+go
+select * from account
+go
+
+
+
+2. USE studentdb
+go
+
+SET NOCOUNT ON 
+go
+--********** create trigger_insert_score  **********--
+--********** Begin **********--
+create trigger trigger_insert_score on score after insert as
+Begin
+    if not exists(select * from student where sno in (select sno from inserted))
+    Begin
+        rollback transaction;
+    	begin transaction;
+    End
+End
+
+
+
+--********** End **********--
+go
+delete from score
+go
+insert into score values('1001','2001','89.5')
+go
+insert into score values('1002','2001','95')
+go
+insert into score values('1011','2001','88')
+go
+select * from score
+go
+
+
+--********** create trigger_delete_student  **********--
+--********** Begin **********--
+create trigger trigger_delete_student on student for delete as 
+Begin
+    delete score where sno=(select sno from deleted)
+End
+
+
+
+--********** End **********--
+go
+delete from student where sno='1001'
+go
+select * from student
+go
+select * from score
+go
+
+--********** create trigger_protect_grade **********--
+create trigger trigger_protect_grade on score for update as
+begin
+    if UPDATE(grade)
+    begin
+        raiserror('更新grade操作被禁止',1,1);
+        rollback transaction;
+    	begin transaction;
+    end
+End
+
+
+
+--********** End **********--
+go
+update score set grade=84 where sno='1002'
+go
+select * from score
+go
